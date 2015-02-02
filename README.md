@@ -2,11 +2,11 @@
 Difference engine for the filesystem. Basically analyses a folder and reports which files have either been added, removed or changed.
 
 ```
-npm install fs-diff --save-dev
+npm install node-fs-diff --save-dev
 ```
 
 ```
-var fsDiff = require( 'fs-diff' );
+var fsDiff = require( 'node-fs-diff' );
 
 var result = fsDiff( 'my_input_directory', {}, // this is the JSON manifest - empty for the first use, result.manifest should be passed in for future calls
 			{
