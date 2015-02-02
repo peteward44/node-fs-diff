@@ -1,0 +1,34 @@
+{
+  "name": "node-fs-diff",
+  "description": "Difference engine for the filesystem. Basically analyses a folder and reports which files have either been added, removed or changed.",
+  "version": "1.0.0",
+  "homepage": "https://github.com/peteward44/node-fs-diff",
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/peteward44/node-fs-diff.git"
+  },
+  "author": "Pete Ward <peteward44@gmail.com>",
+  "main": "./index.js",
+  "keywords": [
+  ],
+  "dependencies": {
+	"fs-extra": "*",
+	"crc": "*",
+	"node.extend": "*"
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/peteward44/node-fs-diff/blob/master/LICENSE"
+    }
+  ],
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/peteward44/node-fs-diff/issues"
+  }
+}
