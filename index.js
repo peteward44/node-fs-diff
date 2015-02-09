@@ -145,6 +145,8 @@ var recurseManifestDir = function( recurseDepth, inputDir, manifest, changesRepo
 				};
 				changesReport.files.removed.push( fullPath );
 				changesReport.totalChanges++;
+				
+				delete manifest.files[ file ];
 			}
 		}
 	}
