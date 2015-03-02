@@ -24,7 +24,7 @@ var calcHash = function( file ) {
 };
 
 
-var processDir = function( manifest, dir, fullDir, changesReport, changesReportDir, options ) {
+var processDir = function( manifest, dir, absolutePath, changesReport, changesReportDir, options ) {
 	// find corresponding dir entry if it exists, otherwise create one
 	if ( !manifest.dirs ) {
 		manifest.dirs = {};
@@ -33,16 +33,20 @@ var processDir = function( manifest, dir, fullDir, changesReport, changesReportD
 		if ( !manifest.dirs.hasOwnProperty( dir ) ) {
 			manifest.dirs[ dir ] = {};
 		}
-		manifest.dirs[ dir ].fullPath = fullDir;
+		
+		var fullPath = absolutePath;
+		if ( options.relativePath ) fullPath = path.relative(options.relativePath,fullPath);
+		
+		manifest.dirs[ dir ].fullPath = fullPath;
 		// mark new directory
 		if ( !changesReportDir.dirs ) {
 			changesReportDir.dirs = {};
 		}
 		changesReportDir.dirs[ dir ] = {
-			fullPath: fullDir,
+			fullPath: fullPath,
 			action: 'ADDED'
 		};
-		changesReport.dirs.added.push( fullDir );
+		changesReport.dirs.added.push( fullPath );
 		changesReport.totalChanges++;
 		
 		return true;
@@ -52,30 +56,37 @@ var processDir = function( manifest, dir, fullDir, changesReport, changesReportD
 };
 
 
-var processFile = function( manifest, file, fullFile, changesReport, changesReportDir, options ) {
-	if ( !includeFile( fullFile, options ) ) {
+var processFile = function( manifest, file, absolutePath, changesReport, changesReportDir, options ) {
+	if ( !includeFile( absolutePath, options ) ) {
 		return false;
 	}
 	if ( !manifest.files ) {
 		manifest.files = {};
 	}
-	var hash = calcHash( fullFile );
+	
+	var fullPath = absolutePath;
+	if ( options.relativePath ) fullPath = path.relative(options.relativePath,fullPath);
+	
+	var hash = calcHash( absolutePath );
 	if ( options.forceAddAll || !manifest.files.hasOwnProperty( file ) ) {
 		// mark as new file
 		if ( !manifest.files.hasOwnProperty( file ) ) {
 			manifest.files[ file ] = {};
 		}
-		manifest.files[ file ].fullPath = fullFile;
+		
+		
+		
+		manifest.files[ file ].fullPath = fullPath;
 		manifest.files[ file ].hash = hash;
 		if ( !changesReportDir.files ) {
 			changesReportDir.files = {};
 		}
 		changesReportDir.files[ file ] = {
-			fullPath: fullFile,
+			fullPath: fullPath,
 			hash: hash,
 			action: 'ADDED'
 		};
-		changesReport.files.added.push( fullFile );
+		changesReport.files.added.push( fullPath );
 		changesReport.totalChanges++;
 	} else {
 		// check if file has been modified
@@ -86,12 +97,12 @@ var processFile = function( manifest, file, fullFile, changesReport, changesRepo
 				changesReportDir.files = {};
 			}
 			changesReportDir.files[ file ] = {
-				fullPath: fullFile,
+				fullPath: fullPath,
 				hash: hash,
 				oldHash: image.hash,
 				action: 'MODIFIED'
 			};
-			changesReport.files.modified.push( fullFile );
+			changesReport.files.modified.push( fullPath );
 			changesReport.totalChanges++;
 			image.hash = hash;
 		}
@@ -114,15 +125,15 @@ var doRecurse = function( recurseDepth, dirJustAdded, options ) {
 var recurseDiskDir = function( recurseDepth, inputDir, manifest, changesReport, changesReportDir, options ) {
 	var files = fs.readdirSync( inputDir );
 	files.forEach( function( file ) {
-		var fullFile = path.join( inputDir, file );
-		var stat = fs.statSync( fullFile );
+		var absolutePath = path.join( inputDir, file );
+		var stat = fs.statSync( absolutePath );
 		if ( stat.isDirectory() ) {
-			var addedDir = processDir( manifest, file, fullFile, changesReport, changesReportDir, options );
+			var addedDir = processDir( manifest, file, absolutePath, changesReport, changesReportDir, options );
 			if ( doRecurse( recurseDepth, addedDir, options ) ) {
-				recurseDiskDir( recurseDepth+1, fullFile, manifest.dirs[ file ], changesReport, changesReportDir.dirs[ file ], options );
+				recurseDiskDir( recurseDepth+1, absolutePath, manifest.dirs[ file ], changesReport, changesReportDir.dirs[ file ], options );
 			}
 		} else {
-			processFile( manifest, file, fullFile, changesReport, changesReportDir, options );
+			processFile( manifest, file, absolutePath, changesReport, changesReportDir, options );
 		}
 	} );
 };
@@ -134,7 +145,11 @@ var recurseManifestDir = function( recurseDepth, inputDir, manifest, changesRepo
 		if ( manifest.files.hasOwnProperty( file ) ) {
 			var fileObj = manifest.files[ file ];
 			var fullPath = fileObj.fullPath;
-			if ( !fs.existsSync( fullPath ) ) {
+			
+			var absolutePath = fullPath;
+			if ( options.relativePath ) absolutePath = path.join(options.relativePath,absolutePath);
+			
+			if ( !fs.existsSync( absolutePath ) ) {
 				if ( !changesReportDir.files ) {
 					changesReportDir.files = {};
 				}
@@ -154,11 +169,15 @@ var recurseManifestDir = function( recurseDepth, inputDir, manifest, changesRepo
 	for ( var dir in manifest.dirs ) {
 		if ( manifest.dirs.hasOwnProperty( dir ) ) {
 			var fullPath = manifest.dirs[ dir ].fullPath;
+			
+			var absolutePath = fullPath;
+			if ( options.relativePath ) absolutePath = path.join(options.relativePath,fullPath);
+			
 			if ( !changesReportDir.dirs ) {
 				changesReportDir.dirs = {};
 			}
 			var dirRemoved = false;
-			if ( !fs.existsSync( fullPath ) ) {
+			if ( !fs.existsSync( absolutePath ) ) {
 				changesReportDir.dirs[ dir ] = {
 					fullPath: fullPath,
 					action: 'REMOVED'
@@ -174,7 +193,7 @@ var recurseManifestDir = function( recurseDepth, inputDir, manifest, changesRepo
 				};
 			}
 			if ( doRecurse( recurseDepth, dirRemoved, options ) ) {
-				recurseManifestDir( recurseDepth+1, fullPath, manifest.dirs[ dir ], changesReport, changesReportDir.dirs[ dir ], options );
+				recurseManifestDir( recurseDepth+1, absolutePath, manifest.dirs[ dir ], changesReport, changesReportDir.dirs[ dir ], options );
 			}
 		}
 	}

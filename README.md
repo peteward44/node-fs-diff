@@ -13,7 +13,8 @@ var result = fsDiff( 'my_input_directory', {}, // this is the JSON manifest - em
 				maxRecurseDepth: 2,	// Maximum directory depth it will traverse
 				fileExtensions: [ ".png" ], // file extensions filter
 				skipDirectoryContentsOnAddRemove: false, // Default behaviour is when encountering a new folder, mark every file within as an added file. This changes that behaviour and only adds the directory to the change list
-				forceAddAll: false // forceAddAll treat manifest as empty and mark all existing files as added
+				forceAddAll: false, // forceAddAll treat manifest as empty and mark all existing files as added
+				relativePath: "/" //Will store all paths relatively to this instead of using absolute paths
 			} );
 ```
 
