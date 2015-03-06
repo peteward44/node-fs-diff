@@ -2,19 +2,18 @@
 Difference engine for the filesystem. Basically analyses a folder and reports which files have either been added, removed or changed.
 
 ```
-npm install node-fs-diff --save-dev
+npm install node-fs-diff --save
 ```
 
 ```
 var fsDiff = require( 'node-fs-diff' );
 
-var result = fsDiff( 'my_input_directory', {}, // this is the JSON manifest - empty for the first use, result.manifest should be passed in for future calls
+var result = fsDiff( '/var/my_input_directory', {}, // this is the JSON manifest - empty for the first use, result.manifest should be passed in for future calls
 			{
 				maxRecurseDepth: 2,	// Maximum directory depth it will traverse
 				fileExtensions: [ ".png" ], // file extensions filter
 				skipDirectoryContentsOnAddRemove: false, // Default behaviour is when encountering a new folder, mark every file within as an added file. This changes that behaviour and only adds the directory to the change list
-				forceAddAll: false, // forceAddAll treat manifest as empty and mark all existing files as added
-				relativePath: "/" //Will store all paths relatively to this instead of using absolute paths
+				forceAddAll: false // forceAddAll treat manifest as empty and mark all existing files as added
 			} );
 ```
 
