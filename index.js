@@ -187,6 +187,8 @@ var recurseManifestDir = function( recurseDepth, rootDir, manifest, changesRepor
 			if ( doRecurse( recurseDepth, dirRemoved, options ) ) {
 				recurseManifestDir( recurseDepth+1, rootDir, manifest.dirs[ dir ], changesReport, changesReportDir.dirs[ dir ], options );
 			}
+			
+			if ( dirRemoved ) delete manifest.dirs[ dir ];
 		}
 	}
 };

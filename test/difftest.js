@@ -21,6 +21,9 @@ describe('node-fs-diff', function() {
 			result2.report.files.removed.length.should.equal( 2 );
 			result2.report.totalChanges.should.equal( 2 );
 			
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			(typeof result2.manifest.dirs).should.equal('undefined');
+			
 			done();
 		});
 
@@ -31,15 +34,23 @@ describe('node-fs-diff', function() {
 			result2.report.files.removed.length.should.equal( 2 );
 			result2.report.totalChanges.should.equal( 2 );
 			
+			(typeof result2.manifest.files).should.equal('undefined');
+			Object.keys(result2.manifest.dirs).length.should.equal(1);
+			Object.keys(result2.manifest.dirs['subdir'].files).length.should.equal(1);
+			
 			done();
 		});
 		
 		it('will detect missing directories', function(done) {
 			var result1 = fsDiff( path.join( fixturesPath, "missingdir", "1" ) );
+			
 			var result2 = fsDiff( path.join( fixturesPath, "missingdir", "2" ), result1.manifest );
 
 			result2.report.dirs.removed.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 3 );
+			
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			Object.keys(result2.manifest.dirs).length.should.equal(0);
 			
 			done();
 		});
@@ -50,6 +61,10 @@ describe('node-fs-diff', function() {
 
 			result2.report.dirs.removed.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 1 );
+			
+			Object.keys(result2.manifest.dirs).length.should.equal(0);
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			
 			
 			done();
 		});
@@ -62,6 +77,9 @@ describe('node-fs-diff', function() {
 			result2.report.dirs.removed.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 4 );
 			
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			Object.keys(result2.manifest.dirs).length.should.equal(1);
+			
 			done();
 		});
 				
@@ -72,6 +90,9 @@ describe('node-fs-diff', function() {
 			result2.report.files.removed.length.should.equal( 1 );
 			result2.report.dirs.removed.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 2 );
+			
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			Object.keys(result2.manifest.dirs).length.should.equal(1);
 			
 			done();
 		});
@@ -86,6 +107,9 @@ describe('node-fs-diff', function() {
 			result2.report.files.added.length.should.equal( 2 );
 			result2.report.totalChanges.should.equal( 2 );
 			
+			Object.keys(result2.manifest.files).length.should.equal(3);
+			(typeof result2.manifest.dirs).should.equal('undefined');
+			
 			done();
 		});
 
@@ -95,6 +119,10 @@ describe('node-fs-diff', function() {
 
 			result2.report.files.added.length.should.equal( 2 );
 			result2.report.totalChanges.should.equal( 2 );
+			
+			(typeof result2.manifest.files).should.equal('undefined');
+			Object.keys(result2.manifest.dirs).length.should.equal(1);
+			Object.keys(result2.manifest.dirs['subdir'].files).length.should.equal(3);
 			
 			done();
 		});
@@ -106,6 +134,9 @@ describe('node-fs-diff', function() {
 			result2.report.dirs.added.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 3 );
 			
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			Object.keys(result2.manifest.dirs).length.should.equal(1);
+			
 			done();
 		});
 		
@@ -115,6 +146,9 @@ describe('node-fs-diff', function() {
 
 			result2.report.dirs.added.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 1 );
+			
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			Object.keys(result2.manifest.dirs).length.should.equal(1);
 			
 			done();
 		});
@@ -127,6 +161,9 @@ describe('node-fs-diff', function() {
 			result2.report.dirs.added.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 4 );
 			
+			Object.keys(result2.manifest.files).length.should.equal(2);
+			Object.keys(result2.manifest.dirs).length.should.equal(2);
+			
 			done();
 		});
 				
@@ -137,6 +174,9 @@ describe('node-fs-diff', function() {
 			result2.report.files.added.length.should.equal( 1 );
 			result2.report.dirs.added.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 2 );
+			
+			Object.keys(result2.manifest.files).length.should.equal(2);
+			Object.keys(result2.manifest.dirs).length.should.equal(2);
 			
 			done();
 		});
@@ -150,6 +190,9 @@ describe('node-fs-diff', function() {
 
 			result2.report.files.modified.length.should.equal( 1 );
 			result2.report.totalChanges.should.equal( 1 );
+			
+			Object.keys(result2.manifest.files).length.should.equal(1);
+			(typeof result2.manifest.dirs).should.equal('undefined');
 			
 			done();
 		});
@@ -171,6 +214,9 @@ describe('node-fs-diff', function() {
 			
 			result2.report.totalChanges.should.equal( 10 );
 			
+			Object.keys(result2.manifest.files).length.should.equal(2);
+			Object.keys(result2.manifest.dirs).length.should.equal(2);
+			
 			done();
 		});
 		
@@ -185,6 +231,9 @@ describe('node-fs-diff', function() {
 			result2.report.files.modified.length.should.equal( 2 );
 			
 			result2.report.totalChanges.should.equal( 6 );
+			
+			Object.keys(result2.manifest.files).length.should.equal(2);
+			Object.keys(result2.manifest.dirs).length.should.equal(2);
 			
 			done();
 		});
