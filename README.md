@@ -17,7 +17,8 @@ var result = fsDiff( '/var/my_input_directory', {}, // this is the JSON manifest
 			} );
 ```
 
-result.manifest - This it the JSON blob that maintains the list of files and their state. The user should not use this object directly
+result.manifest - This it the JSON blob that maintains the list of files and their state. The user should not use this object directly. This object can be passed as a parameter to subsequent calls to fsDiff() and it will return the difference between the existing state and the provided manifest.
+
 result.report - Contains all the changed files in the following format: 
 
 ```
