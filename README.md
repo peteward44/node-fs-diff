@@ -1,5 +1,8 @@
 # node-fs-diff
-Difference engine for the filesystem. Basically analyses a folder and reports which files have either been added, removed or changed.
+
+[![Build Status](https://travis-ci.org/peteward44/node-fs-diff.svg)](https://travis-ci.org/peteward44/node-fs-diff)
+
+Difference engine for4the filesystem. Basically analyses a folder and reports which files have either been added, removed or changed.
 
 ```
 npm install node-fs-diff --save
