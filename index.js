@@ -3,10 +3,10 @@
 // Small utility to analyse an input directory and check if any files have been changed since
 // the last time it was looked at.
 
-var fs = require('fs-extra')
-	, crc = require('crc')
-	, path = require('path')
-	, extend = require('node.extend');
+var fs = require('fs-extra');
+var crc = require('crc');
+var path = require('path');
+var extend = require('node.extend');
 
 
 var includeFile = function( filePath, options ) {
@@ -137,11 +137,12 @@ var recurseDiskDir = function( recurseDepth, rootDir, relativeDir, manifest, cha
 
 var recurseManifestDir = function( recurseDepth, rootDir, manifest, changesReport, changesReportDir, options ) {
 
+	var relativePath, absolutePath;
 	for ( var file in manifest.files ) {
 		if ( manifest.files.hasOwnProperty( file ) ) {
 			var fileObj = manifest.files[ file ];
-			var relativePath = fileObj.relativePath;
-			var absolutePath = path.join( rootDir, relativePath );
+			relativePath = fileObj.relativePath;
+			absolutePath = path.join( rootDir, relativePath );
 			
 			if ( !fs.existsSync( absolutePath ) ) {
 				if ( !changesReportDir.files ) {
@@ -162,8 +163,8 @@ var recurseManifestDir = function( recurseDepth, rootDir, manifest, changesRepor
 	
 	for ( var dir in manifest.dirs ) {
 		if ( manifest.dirs.hasOwnProperty( dir ) ) {
-			var relativePath = manifest.dirs[ dir ].relativePath;
-			var absolutePath = path.join( rootDir, relativePath );
+			relativePath = manifest.dirs[ dir ].relativePath;
+			absolutePath = path.join( rootDir, relativePath );
 			
 			if ( !changesReportDir.dirs ) {
 				changesReportDir.dirs = {};
@@ -201,18 +202,19 @@ var removeEmptyDirectoryTrees = function( dirReport ) {
 		isEmpty = false; // files exist, not empty
 	}
 	if ( dirReport.dirs ) {
-		for ( var dir in dirReport.dirs ) {
+		var dir, dirObj;
+		for ( dir in dirReport.dirs ) {
 			if ( dirReport.dirs.hasOwnProperty( dir ) ) {
-				var dirObj = dirReport.dirs[ dir ];
+				dirObj = dirReport.dirs[ dir ];
 				if ( dirObj.action !== 'NONE' ) {
 					isEmpty = false; // removed/added directory, not empty
 				}
 			}
 		}
 		
-		for ( var dir in dirReport.dirs ) {
+		for ( dir in dirReport.dirs ) {
 			if ( dirReport.dirs.hasOwnProperty( dir ) ) {
-				var dirObj = dirReport.dirs[ dir ];
+				dirObj = dirReport.dirs[ dir ];
 				if ( dirObj.action === 'NONE' ) {
 					// check each directory, make sure they're all empty too
 					if ( !removeEmptyDirectoryTrees( dirObj ) ) {
