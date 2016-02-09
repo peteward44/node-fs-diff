@@ -7,6 +7,7 @@ var fs = require('fs-extra');
 var crc = require('crc');
 var path = require('path');
 var extend = require('node.extend');
+var glob = require('globby');
 
 
 var includeFile = function( filePath, options ) {
@@ -118,7 +119,7 @@ var doRecurse = function( recurseDepth, dirJustAdded, options ) {
 
 var recurseDiskDir = function( recurseDepth, rootDir, relativeDir, manifest, changesReport, changesReportDir, options ) {
 	var inputDir = path.join( rootDir, relativeDir );
-	var files = fs.readdirSync( inputDir );
+	var files = glob.sync( inputDir );
 	files.forEach( function( file ) {
 		var absolutePath = path.join( inputDir, file );
 		var relativeSubDir = path.relative( rootDir, absolutePath );
