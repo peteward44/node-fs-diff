@@ -1,7 +1,7 @@
 {
   "name": "node-fs-diff",
   "description": "Difference engine for the filesystem. Basically analyses a folder and reports which files have either been added, removed or changed.",
-  "version": "3.0.0-snapshot",
+  "version": "3.0.1",
   "homepage": "https://github.com/peteward44/node-fs-diff",
   "repository": {
     "type": "git",
